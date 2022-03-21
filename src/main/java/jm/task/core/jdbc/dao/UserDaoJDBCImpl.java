@@ -4,10 +4,7 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,9 +40,13 @@ public class UserDaoJDBCImpl implements UserDao {
         }
 
         public void saveUser(String name, String lastName,byte age){
-            try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate(String.format("INSERT users " +
-                        "(NAME, LASTNAME, AGE) VALUES (\'%s\', \'%s\', %d);", name, lastName, age));
+            try {
+                String sql = "INSERT users (NAME, LASTNAME, AGE) VALUES (?, ?, ?);";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, lastName);
+                preparedStatement.setByte(3, age);
+                preparedStatement.executeUpdate();
                 System.out.println(String.format("User с именем – %s %s добавлен в базу данных", name, lastName));
             } catch (SQLException e) {
                 System.out.println("Operation failed\n" + e);
@@ -53,8 +54,11 @@ public class UserDaoJDBCImpl implements UserDao {
         }
 
         public void removeUserById ( long id){
-            try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate(String.format("DELETE FROM users WHERE ID=%d;", id));
+            try {
+                String sql = "DELETE FROM users WHERE ID=?;";
+                PreparedStatement preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setLong(1, id);
+                preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 System.out.println("Operation failed\n" + e);
             }
