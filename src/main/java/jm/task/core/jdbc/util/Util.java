@@ -6,11 +6,11 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 
 public class Util {
 
@@ -23,7 +23,6 @@ public class Util {
     private static final String urlHibernate = "jdbc:mysql://" + hostName + "/" + dbNameHibernate;
 
 
-
     public static Connection getMySQLConnection() throws SQLException, ClassNotFoundException,
             NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Class.forName("com.mysql.cj.jdbc.Driver").getDeclaredConstructor().newInstance();
@@ -33,9 +32,7 @@ public class Util {
     }
 
     public static SessionFactory getHibernateSessionFactory() {
-
         Configuration configuration = new Configuration();
-
         configuration.setProperty(AvailableSettings.DRIVER, "com.mysql.cj.jdbc.Driver");
         configuration.setProperty(AvailableSettings.URL, urlHibernate);
         configuration.setProperty(AvailableSettings.USER, userName);
@@ -43,7 +40,7 @@ public class Util {
         configuration.setProperty(AvailableSettings.DIALECT, "org.hibernate.dialect.MySQL8Dialect");
         configuration.setProperty(AvailableSettings.SHOW_SQL, "true");
         configuration.setProperty(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-        configuration.setProperty(AvailableSettings.HBM2DDL_AUTO, "update");
+        configuration.setProperty(AvailableSettings.HBM2DDL_AUTO, "none");
         configuration.addAnnotatedClass(User.class);
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
