@@ -6,16 +6,21 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+
 import javax.persistence.Query;
 import java.util.List;
 
 
 public class UserDaoHibernateImpl implements UserDao {
+    private final SessionFactory sessionFactory;
 
-    private final SessionFactory sessionFactory = Util.getHibernateSessionFactory();
 
+    private UserDaoHibernateImpl() {
+        sessionFactory = Util.getHibernateSessionFactory();
+    }
 
-    public UserDaoHibernateImpl() {
+    public static UserDaoHibernateImpl makeUserDaoHibernateImpl() {
+        return new UserDaoHibernateImpl();
     }
 
     public Session getSession() throws HibernateException {
@@ -26,8 +31,8 @@ public class UserDaoHibernateImpl implements UserDao {
     public void createUsersTable() {
         Session session = getSession();
         Transaction transaction = session.beginTransaction();
-        String sql = "CREATE TABLE IF NOT EXISTS user (ID BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-                "NAME varchar(20), LASTNAME varchar(20), AGE tinyint);";
+        String sql = "CREATE TABLE IF NOT EXISTS user (ID BIGINT PRIMARY KEY AUTO_INCREMENT, "
+                + "NAME varchar(20), LASTNAME varchar(20), AGE tinyint);";
         Query query = session.createSQLQuery(sql);
         query.executeUpdate();
         transaction.commit();
